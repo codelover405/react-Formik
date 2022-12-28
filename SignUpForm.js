@@ -1,46 +1,10 @@
 import React from "react";
-import { Formik ,useFormik } from "formik";
+import { Formik } from "formik";
 import "./Apps.css";
-import * as Yup from 'yup'
-
-
-const SignUpSchema = Yup.object().shape({
-  firstName: Yup.string().required("This is required!"),
-  email: Yup.string().email("Valid Email").required("This is required!"),
-  phone: Yup.number().required(),
-  password: Yup.string().required().min(6, 'must be of 6 character Log.'),
-  confirmPassword: Yup.string().required().min(6, 'must be of 6 character Log.').oneOf([Yup.ref("password")], "Password must be not same."),
-  termsAndCondtions: Yup.boolean().oneOf([true], "Please accpet tems and condition"),
-  additionalInfoFlag:Yup.boolean(),
-  additionalInfo:Yup.string().when("additionalInfoFlag",{
-    is:true,
-    then:Yup.string().required("This fild is required"),
-  })
-})
-
 const SigninForm = () => {
-  const formik = useFormik({
-    initialValues:{
-      firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        phone: "",
-        subscription: "",
-        termsAndCondtions: false,
-        additionalInfoFlag: false,
-        additionalInfo: "",
-        gender: "",
-    },
-    validationSchema:SignUpSchema,
-    onSubmit:(values) => {
-      console.log(values);
-    }
-  })
   return (
     <>
-      {/* <Formik initialValues={{
+      <Formik initialValues={{
         // first time load how to set?
         firstName: "",
         lastName: "",
@@ -49,20 +13,69 @@ const SigninForm = () => {
         confirmPassword: "",
         phone: "",
         subscription: "",
-        termsAndCondtions: false,
-        additionalInfoFlag: false,
-        additionalInfo: "",
+        termsAndCondtions: "",
         gender: "",
       }}
-        validationSchema={SignUpSchema}
+        validate={(values) => {
+          const errors = {};
+          // firstname
+          if (!values.firstName) {
+            errors.firstName = "Required!";
+          }
+          // lastname
+          if (!values.lastName) {
+            errors.lastName = "Required!";
+          }
+          // email
+          if (!values.email) {
+            errors.email = "Required!";
+          } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+            errors.email = "Not Valid Email!"
+          }
+          // phone
+          if (!values.phone) {
+            errors.phone = "Required!";
+          } else if (values.phone.length < 10 || values.phone.length > 10) {
+            errors.phone = "Numbar is not 10 Digits";
+          } else if (/^\d{10}$/.test()) {
+            errors.phone = "num";
+          }
+          // password
+          if (!values.password) {
+            errors.password = "Required!";
+          }
+          // confirm Password
+          if (!values.confirmPassword) {
+            errors.confirmPassword = "Required!";
+          } else if (values.password !== values.confirmPassword) {
+            errors.confirmPassword = "Confirm Password is not mach Password";
+          }
+
+
+          // Gender
+          if(!values.gender){
+            errors.gender ="Required!"
+          }
+          // subscription
+          if(!values.subscription){
+            errors.subscription ="Required!"
+          }
+          // 
+          if(!values.termsAndCondtions){
+            errors.termsAndCondtions ="Required!"
+          }
+
+          return errors;
+          // console.log(values);
+        }}
 
         onSubmit={(values) => {
           console.log(values);
         }}
       >
 
-        {(formik) => ( */}
-          {/* onsubmit(formik.handleSubmit) = connect to fomik  */}
+        {(formik) => (
+          //onsubmit(formik.handleSubmit) = connect to fomik 
           <form onSubmit={formik.handleSubmit}>
             {/* {console.log(formik)} */}
             {console.log(formik.errors)}
@@ -75,8 +88,7 @@ const SigninForm = () => {
                 onBlur={formik.handleBlur}
                 value={formik.values.firstName} />
             </div>
-            {formik.touched.firstName && formik.errors.firstName && (
-              <span className="field_error">{formik.errors.firstName}</span>)}
+            <span className="field_error">{formik.errors.firstName}</span>
             <div className="form-group mt-2">
               <label htmlFor="lastName">Last Name</label>
               <input type="text" className="form-control" name="lastName"
@@ -84,8 +96,7 @@ const SigninForm = () => {
                 onBlur={formik.handleBlur}
                 value={formik.values.lastName} />
             </div>
-            {formik.touched.lastName && formik.errors.lastName && (
-              <span className="field_error">{formik.errors.lastName}</span>)}
+            <span className="field_error">{formik.errors.lastName}</span>
             <div className="form-group mt-2">
               <label>Gender</label>
               <div>
@@ -134,8 +145,7 @@ const SigninForm = () => {
                     Other
                   </label>
                 </div>
-                {formik.touched.gender && formik.errors.gender && (
-                  <span className="field_error">{formik.errors.gender}</span>)}
+                <span className="field_error">{formik.errors.lastName}</span>
               </div>
             </div>
             <div className="form-group mt-2">
@@ -145,8 +155,7 @@ const SigninForm = () => {
                 onBlur={formik.handleBlur}
                 value={formik.values.email} />
             </div>
-            {formik.touched.email && formik.errors.email && (
-              <span className="field_error">{formik.errors.email}</span>)}
+            <span className="field_error">{formik.errors.email}</span>
             <div className="form-group mt-2">
               <label htmlFor="phone">Phone Number</label>
               <input type="text" className="form-control" name="phone"
@@ -154,8 +163,7 @@ const SigninForm = () => {
                 onBlur={formik.handleBlur}
                 value={formik.values.phone} />
             </div>
-            {formik.touched.phone && formik.errors.phone && (
-              <span className="field_error">{formik.errors.phone}</span>)}
+            <span className="field_error">{formik.errors.phone}</span>
             <div className="form-group mt-2">
               <label htmlFor="password">Password</label>
               <input type="password" className="form-control" name="password"
@@ -163,8 +171,7 @@ const SigninForm = () => {
                 onBlur={formik.handleBlur}
                 value={formik.values.password} />
             </div>
-            {formik.touched.password && formik.errors.password && (
-              <span className="field_error">{formik.errors.password}</span>)}
+            <span className="field_error">{formik.errors.password}</span>
             <div className="form-group mt-2">
               <label htmlFor="confirmPassword">Confirm Password</label>
               <input
@@ -176,8 +183,7 @@ const SigninForm = () => {
                 value={formik.values.confirmPassword}
               />
             </div>
-            {formik.touched.confirmPassword && formik.errors.confirmPassword && (
-              <span className="field_error">{formik.errors.confirmPassword}</span>)}
+            <span className="field_error">{formik.errors.confirmPassword}</span>
 
             <div className="form-group mt-2">
               <label htmlFor="confirmPassword">Subscription</label>
@@ -192,46 +198,7 @@ const SigninForm = () => {
                 <option value="subscription-3">Enterprise</option>
               </select>
             </div>
-            {formik.touched.subscription && formik.errors.subscription && (
-              <span className="field_error">{formik.errors.subscription}</span>)}
-
-
-
-
-            <div className="form-group mt-2">
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="additionalInfoFlag"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.additionalInfoFlag}
-                />
-                <label className="form-check-label" htmlFor="termsAndCondtions">
-                  AdditionalInfoFlag.
-                </label>
-              </div>
-              {formik.touched.additionalInfoFlag && formik.errors.additionalInfoFlag && (
-                <span className="field_error">{formik.errors.additionalInfoFlag}</span>)}
-            </div>
-
-
-{formik.values.additionalInfoFlag &&
-            <div className="form-group mt-2">
-              <label htmlFor="additionalInfo">Enter Additioal Information </label>
-              <textarea name="additionalInfo" className="form-control" id="additionalInfo" cols="30" rows="5"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.additionalInfo}
-                >
-              </textarea>
-              {formik.touched.additionalInfo && formik.errors.additionalInfo && (
-                <span className="field_error">{formik.errors.additionalInfo}</span>)}
-            </div>
-}
-
-
+            <span className="field_error">{formik.errors.subscription}</span>
 
             <div className="form-group mt-2">
               <div className="form-check">
@@ -247,8 +214,7 @@ const SigninForm = () => {
                   Accept terms and conditions.
                 </label>
               </div>
-              {formik.touched.termsAndCondtions && formik.errors.termsAndCondtions && (
-                <span className="field_error">{formik.errors.termsAndCondtions}</span>)}
+              <span className="field_error">{formik.errors.termsAndCondtions}</span>
             </div>
 
             <div className="d-grid mt-2">
@@ -257,14 +223,10 @@ const SigninForm = () => {
               </button>
             </div>
           </form>
-        {/* )} */}
-      {/* </Formik> */}
+        )}
+      </Formik>
     </>
   );
 };
 
 export default SigninForm;
-
-
-
-{/* <Formik></Formik>  === useFormik hooks  */}
